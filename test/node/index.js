@@ -18,4 +18,6 @@ series([
   test(require.resolve('./log')),
   test(require.resolve('./promisify')),
   test(require.resolve('./callbackify'))
-]);
+], function (err) {
+  if (err) throw err;
+});
