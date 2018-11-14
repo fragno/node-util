@@ -30,7 +30,7 @@ var getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors ||
   };
 
 var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
+module.exports.format = function(f) {
   if (!isString(f)) {
     var objects = [];
     for (var i = 0; i < arguments.length; i++) {
@@ -72,7 +72,7 @@ exports.format = function(f) {
 // Mark that a method should not be used.
 // Returns a modified function which warns once by default.
 // If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
+module.exports.deprecate = function(fn, msg) {
   if (typeof process !== 'undefined' && process.noDeprecation === true) {
     return fn;
   }
@@ -80,7 +80,7 @@ exports.deprecate = function(fn, msg) {
   // Allow for deprecating things in the process of starting up.
   if (typeof process === 'undefined') {
     return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
+      return module.exports.deprecate(fn, msg).apply(this, arguments);
     };
   }
 
@@ -105,7 +105,7 @@ exports.deprecate = function(fn, msg) {
 
 var debugs = {};
 var debugEnviron;
-exports.debuglog = function(set) {
+module.exports.debuglog = function(set) {
   if (isUndefined(debugEnviron))
     debugEnviron = process.env.NODE_DEBUG || '';
   set = set.toUpperCase();
@@ -113,7 +113,7 @@ exports.debuglog = function(set) {
     if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
       var pid = process.pid;
       debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
+        var msg = module.exports.format.apply(module.exports, arguments);
         console.error('%s %d: %s', set, pid, msg);
       };
     } else {
@@ -146,7 +146,7 @@ function inspect(obj, opts) {
     ctx.showHidden = opts;
   } else if (opts) {
     // got an "options" object
-    exports._extend(ctx, opts);
+    module.exports._extend(ctx, opts);
   }
   // set default options
   if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
@@ -156,7 +156,7 @@ function inspect(obj, opts) {
   if (ctx.colors) ctx.stylize = stylizeWithColor;
   return formatValue(ctx, obj, ctx.depth);
 }
-exports.inspect = inspect;
+module.exports.inspect = inspect;
 
 
 // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
@@ -225,7 +225,7 @@ function formatValue(ctx, value, recurseTimes) {
       value &&
       isFunction(value.inspect) &&
       // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
+      value.inspect !== module.exports.inspect &&
       // Also filter out any prototype objects using the circular check.
       !(value.constructor && value.constructor.prototype === value)) {
     var ret = value.inspect(recurseTimes, ctx);
@@ -460,68 +460,68 @@ function reduceToSingleString(output, base, braces) {
 function isArray(ar) {
   return Array.isArray(ar);
 }
-exports.isArray = isArray;
+module.exports.isArray = isArray;
 
 function isBoolean(arg) {
   return typeof arg === 'boolean';
 }
-exports.isBoolean = isBoolean;
+module.exports.isBoolean = isBoolean;
 
 function isNull(arg) {
   return arg === null;
 }
-exports.isNull = isNull;
+module.exports.isNull = isNull;
 
 function isNullOrUndefined(arg) {
   return arg == null;
 }
-exports.isNullOrUndefined = isNullOrUndefined;
+module.exports.isNullOrUndefined = isNullOrUndefined;
 
 function isNumber(arg) {
   return typeof arg === 'number';
 }
-exports.isNumber = isNumber;
+module.exports.isNumber = isNumber;
 
 function isString(arg) {
   return typeof arg === 'string';
 }
-exports.isString = isString;
+module.exports.isString = isString;
 
 function isSymbol(arg) {
   return typeof arg === 'symbol';
 }
-exports.isSymbol = isSymbol;
+module.exports.isSymbol = isSymbol;
 
 function isUndefined(arg) {
   return arg === void 0;
 }
-exports.isUndefined = isUndefined;
+module.exports.isUndefined = isUndefined;
 
 function isRegExp(re) {
   return isObject(re) && objectToString(re) === '[object RegExp]';
 }
-exports.isRegExp = isRegExp;
+module.exports.isRegExp = isRegExp;
 
 function isObject(arg) {
   return typeof arg === 'object' && arg !== null;
 }
-exports.isObject = isObject;
+module.exports.isObject = isObject;
 
 function isDate(d) {
   return isObject(d) && objectToString(d) === '[object Date]';
 }
-exports.isDate = isDate;
+module.exports.isDate = isDate;
 
 function isError(e) {
   return isObject(e) &&
       (objectToString(e) === '[object Error]' || e instanceof Error);
 }
-exports.isError = isError;
+module.exports.isError = isError;
 
 function isFunction(arg) {
   return typeof arg === 'function';
 }
-exports.isFunction = isFunction;
+module.exports.isFunction = isFunction;
 
 function isPrimitive(arg) {
   return arg === null ||
@@ -531,9 +531,9 @@ function isPrimitive(arg) {
          typeof arg === 'symbol' ||  // ES6 symbol
          typeof arg === 'undefined';
 }
-exports.isPrimitive = isPrimitive;
+module.exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = require('./support/isBuffer');
+module.exports.isBuffer = require('./support/isBuffer');
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -559,8 +559,8 @@ function timestamp() {
 
 
 // log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+module.exports.log = function() {
+  console.log('%s - %s', timestamp(), module.exports.format.apply(module.exports, arguments));
 };
 
 
@@ -577,9 +577,9 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = require('inherits');
+module.exports.inherits = require('inherits');
 
-exports._extend = function(origin, add) {
+module.exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
   if (!add || !isObject(add)) return origin;
 
@@ -597,7 +597,7 @@ function hasOwnProperty(obj, prop) {
 
 var kCustomPromisifiedSymbol = typeof Symbol !== 'undefined' ? Symbol('util.promisify.custom') : undefined;
 
-exports.promisify = function promisify(original) {
+module.exports.promisify = function promisify(original) {
   if (typeof original !== 'function')
     throw new TypeError('The "original" argument must be of type Function');
 
@@ -651,7 +651,7 @@ exports.promisify = function promisify(original) {
   );
 }
 
-exports.promisify.custom = kCustomPromisifiedSymbol
+module.exports.promisify.custom = kCustomPromisifiedSymbol
 
 function callbackifyOnRejected(reason, cb) {
   // `!reason` guard inspired by bluebird (Ref: https://goo.gl/t5IS6M).
@@ -700,4 +700,4 @@ function callbackify(original) {
                           getOwnPropertyDescriptors(original));
   return callbackified;
 }
-exports.callbackify = callbackify;
+module.exports.callbackify = callbackify;
